@@ -1,5 +1,9 @@
 import os
 
+
+#FALTA CAMBIAR EL TEXTO DE LA PRIMERA LINEA PARA QUE, SI "." DIGA "CURRENT"
+# Y SI NO, DIGA EL NOMBRE PROPIO DEL DIRECTORIO
+
 def get_files_info(working_directory, directory="."):
     try:
         # crea el path absoluto del join
@@ -8,14 +12,13 @@ def get_files_info(working_directory, directory="."):
         # si no empieza con la direccion de working_directory 
         # -> directory accede fuera del working_directory
         if not full_path.startswith(os.path.abspath(working_directory)):
-            return f'Error: Cannot list "{directory}" as it is outside the permitted working directory'
+            return f'   Error: Cannot list "{directory}" as it is outside the permitted working directory'
         
         elif not os.path.isdir(full_path):
-            return f'Error: "{directory}" is not a directory'
+            return f'   Error: "{directory}" is not a directory'
         
-
-        lines = ["Result for current directory:"]
-
+        
+        lines = []
         for c in sorted(os.listdir(full_path)):
             content_full_path = os.path.join(full_path, c)
             
