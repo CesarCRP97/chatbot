@@ -5,6 +5,9 @@ from pkg.calculator import Calculator
 
 
 class TestCalculator(unittest.TestCase):
+
+    # este metodo setea el atributo ANTES de cada test 
+    # (setUpClass lo haria solo una vez y podria mutar)
     def setUp(self):
         self.calculator = Calculator()
 

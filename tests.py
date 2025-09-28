@@ -1,26 +1,16 @@
-from functions.get_files_info import get_files_info
+from functions.get_file_content import get_file_content
 
 
-def run_tests():
-    # Define tus tests como pares (working_directory, directory)
-    tests = [
-        ("calculator", "."),                         # directorio actual
-        ("calculator", "pkg"),                        # subir un nivel
-        ("calculator", "/bin"),                 # carpeta que no existe
-        ("calculator", "../"),
-    ]
+def test():
+    result = get_file_content("calculator", "main.py")
+    print(result)
 
-    for i, (wd, d) in enumerate(tests):
+    result = get_file_content("calculator", "pkg/calculator.py")
+    print(result)
 
-        
-        directory_name = d        
-        if directory_name == ".":
-            directory_name = "current"
-        else:
-            directory_name = f"'{directory_name}'"
-        print(f"Result for {directory_name} directory:")
-        result = get_files_info(wd, d)
-        print(result)
+    result = get_file_content("calculator", "/bin/cat")
+    print(result)
+
 
 if __name__ == "__main__":
-    run_tests()
+    test()
