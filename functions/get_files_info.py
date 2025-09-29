@@ -1,9 +1,5 @@
 import os
 
-
-#FALTA CAMBIAR EL TEXTO DE LA PRIMERA LINEA PARA QUE, SI "." DIGA "CURRENT"
-# Y SI NO, DIGA EL NOMBRE PROPIO DEL DIRECTORIO
-
 def get_files_info(working_directory, directory="."):
     # crea el path absoluto del join
     full_path = os.path.abspath(os.path.join(working_directory, directory))
