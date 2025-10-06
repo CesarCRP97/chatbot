@@ -52,14 +52,13 @@ def main():
             if len(calls) == 0 and response.text:
                 print(response.text)
                 is_text = True
-
-            for candidate in response.candidates:
-                # append the full candidate content to messages
-                if candidate.content:
-                    messages.append(candidate.content)
-            debug_tail(messages)
-            if is_text:
                 break
+            else:
+                for candidate in response.candidates:
+                    # append the full candidate content to messages
+                    if candidate.content:
+                        messages.append(candidate.content)
+
 
         except Exception as e:
             print(f"Error during content generation: {e}")
@@ -107,6 +106,8 @@ def generate_content(client, messages, verbose):
 
     return response
 
+
+# For debugging: print the last n messages with their roles and number of parts
 def debug_tail(messages, n=6):
     print("TAIL:", [(m.role, len(getattr(m, "parts", []) or [])) for m in messages[-n:]])
 
