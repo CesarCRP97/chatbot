@@ -14,6 +14,8 @@ from google.genai import types
 def main():
 
     load_dotenv()
+    api_key = os.environ.get("GEMINI_API_KEY")
+    client = genai.Client(api_key= api_key)
 
     verbose = "--verbose" in sys.argv
     args = []
@@ -28,10 +30,7 @@ def main():
         print('Example: python main.py "How do I fix the calculator?"')
         sys.exit(1)
 
-
-    api_key = os.environ.get("GEMINI_API_KEY")
-    client = genai.Client(api_key= api_key)
-
+    # Join all args to form the complete prompt
     prompt = " ".join(args)
 
     if verbose:
