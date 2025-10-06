@@ -5,6 +5,8 @@ import sys
 from call_function import available_functions, call_function
 from prompts import system_prompt
 
+from config import LIMIT_CYCLES
+
 
 from dotenv import load_dotenv
 from google import genai
@@ -41,8 +43,27 @@ def main():
         types.Content(role="user", parts=[types.Part(text=prompt)])
     ]
 
-    generate_content(client, messages, verbose)
-        
+    for _ in range(LIMIT_CYCLES):
+        try:
+            response = generate_content(client, messages, verbose)
+            is_text = False
+            # Normalizado de response.function_calls
+            calls = response.function_calls or []
+            if len(calls) == 0 and response.text:
+                print(response.text)
+                is_text = True
+
+            for candidate in response.candidates:
+                # append the full candidate content to messages
+                if candidate.content:
+                    messages.append(candidate.content)
+            debug_tail(messages)
+            if is_text:
+                break
+
+        except Exception as e:
+            print(f"Error during content generation: {e}")
+            break
 
 
 
@@ -60,20 +81,34 @@ def generate_content(client, messages, verbose):
         print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
         print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
     
-    if not response.function_calls:
-        print(response.text)
-        return # Exit the function or continue your program appropriately
-    
-    for function_call_part in response.function_calls:
-        function_call_part_result = call_function(function_call_part, verbose)
+    calls = response.function_calls or []
+    for function_call_part in calls:
+        # call each function and append the result to messages
+        result = call_function(function_call_part, verbose)
 
-        if function_call_part_result.parts[0].function_response.response  is None:
+        tool_msg = types.Content(
+                    role="user", 
+                    parts=[
+                        types.Part(
+                            function_response= types.FunctionResponse(
+                                name=function_call_part.name,
+                                response={"result": result})
+                        ),
+                    ],
+        )
+
+        messages.append(tool_msg)
+
+        if result.parts[0].function_response.response  is None:
             raise Exception("Not response produced when calling function")
 
         elif verbose:
-            print(f"-> {function_call_part_result.parts[0].function_response.response}")
+            print(f"-> {result.parts[0].function_response.response}")
 
+    return response
 
+def debug_tail(messages, n=6):
+    print("TAIL:", [(m.role, len(getattr(m, "parts", []) or [])) for m in messages[-n:]])
 
 
 if __name__ == "__main__":

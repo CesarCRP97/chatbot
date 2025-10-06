@@ -1,3 +1,4 @@
 MAX_CHARS = 10000
+LIMIT_CYCLES = 20
 
 HARDCODED_WD = './calculator'
