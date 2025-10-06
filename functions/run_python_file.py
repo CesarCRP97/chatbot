@@ -54,7 +54,7 @@ schema_run_python_file = types.FunctionDeclaration(
             ),
             "args": types.Schema(
                 type=types.Type.ARRAY,
-                description="The arguments needed to be passed to the python file. It can be empty or not provided.",
+                description="It can be not provided. The arguments needed to be passed to the python file.",
                 items=types.Schema(type=types.Type.STRING),
             ),
         },
